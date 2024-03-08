@@ -1,20 +1,30 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Routes from './common/routes';
 
-export default function App() {
+
+export const UserContext = React.createContext();
+export const ProfileContext = React.createContext();
+export const ApprovalsContext = React.createContext();
+
+const App = () => {
+  const [user, setUser] = useState('No user');  
+  const [profile, setProfile] = useState(); 
+  const [approvals, setApprovals] = useState(); 
+
+  
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <UserContext.Provider value={{user, setUser}}>              
+        <ProfileContext.Provider value={{profile, setProfile}}> 
+          <ApprovalsContext.Provider value={{approvals, setApprovals}}>
+            <Routes/>
+          </ApprovalsContext.Provider> 
+        </ProfileContext.Provider> 
+      </UserContext.Provider>       
+    </SafeAreaProvider>   
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
+
