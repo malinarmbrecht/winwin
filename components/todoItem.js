@@ -6,7 +6,7 @@ export default function TodoItem({pressHandler, item}) {
     return (
         <TouchableOpacity onPress={() => pressHandler(item.streck)}>
             <View style={styles.item}>
-                <MaterialIcons style={styles.itemLeftContent} name={item.icon} size={24} color="black" />
+                <MaterialIcons name={item.icon} size={24} color="black" />
                 <Text style={styles.itemText}> { item.title } ( { item.streck } )</Text>    
                 <MaterialIcons style={styles.itemRightContent} name="done-outline" size={24} color="#56EEEE" />
             </View>
@@ -16,20 +16,19 @@ export default function TodoItem({pressHandler, item}) {
 
 const styles = StyleSheet.create({
     item: {
-        height: 30,
-        marginTop: 10,
+        padding: 16,
+        marginTop: 16,
         borderColor: 'white',
         borderWidth: 1,
         borderStyle: 'dashed',
         borderRadius: 10,
         flexDirection: 'row',
-        backgroundColor: 'white',
-        justifyContent: 'space-between',
 
     },
     itemText: {
         flex: 5,
         fontSize: 18,
+        marginLeft: 10,
     },
     itemRightContent: {
         flex: 1,

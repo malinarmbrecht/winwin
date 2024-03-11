@@ -44,18 +44,13 @@ export default function Home ({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.contentContainer}>
-                <View style={styles.contentText}>
-                    <MaterialIcons name='face-3' size={48} onPress={showProfileHandler}/>                                 
-                    <Text style={styles.itemText}> { user.name } </Text>    
-                </View>   
-                <View style={styles.contentText}>    
-                    <Text  style={styles.itemText}> {month}: {user.streck} /30 </Text>       
+            <View style={styles.wrapperContainer}>
+                <MaterialIcons name={ user.icon } size={74} onPress={showProfileHandler}/>  
+                <View style={styles.overviewContainer}>                                             
+                    <Text style={styles.itemTextBold}> { user.name } </Text>    
+                    <Text  style={styles.itemText}> {month}: {user.streck} /30 </Text>      
+                    <Text  style={styles.itemText}> Förra månaden: {user.lastMonth} /30 </Text> 
                 </View>  
-                <View style={styles.contentText}>    
-                    <Text  style={styles.itemText}> Förra månaden: {user.lastMonth} /30 </Text>      
-                </View>  
-            </View>      
             {user.type === 'admin' ? (
             <>
                 <Modal visible={modalOpen} animationType='slide'>
@@ -78,7 +73,7 @@ export default function Home ({ navigation }) {
             </>
             )}  
             
-            
+            </View>
             
             <View style={styles.list}>
                 <FlatList
@@ -87,7 +82,8 @@ export default function Home ({ navigation }) {
                         <TouchableOpacity onPress={() => pressTodoHandler(item, user)}>
                             <Card>
                                 <MaterialIcons name={item.icon} size={24} color="black" />
-                                <Text> { item.title } ( { item.streck } )</Text>    
+                                <Text style={styles.itemTodoText}> { item.title } ( { item.streck } )</Text> 
+                                <MaterialIcons name='done-outline' size={24} color="black" />   
                             </Card>
                     </TouchableOpacity>
                     )}
@@ -103,52 +99,39 @@ const styles = StyleSheet.create({
         backgroundColor: '#E0E0E0',
         flex: 1,
     },
-    contentContainer: {
-        marginVertical: 20,
-        padding: 10,
-        height: '50', 
+    wrapperContainer: {
+        padding: 20,
         backgroundColor: '#56EEEE',
         borderRadius: 10,
-        borderColor: '#56EEEE',
-        flex: 1,        
-        flexDirection:'column',
-        shadowOffset: { width: 1, height: 1 },
-        shadowColor: '#333',
-        shadowOpacity: 0.3,
-        shadowRadius: 2,
-        
-    },
-    contentText: {
-        
         flexDirection: 'row',
-        justifyContent: 'left',
-        alignItems: 'baseline',
-        backgroundColor: 'green',
+        alignItems: 'flex-top',
+    },
+    overviewContainer: {
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+    },
+    itemText: {
+        marginLeft: 20,
+        fontSize: 20,
+    },
+    itemTextBold: {
+        marginLeft: 20,
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    itemTodoText: {
+        marginLeft: 20,
+        flex: 4
     },
     list: {
         flex: 2,
     },
-    stars: {
-        flex: 1,
-        fontSize: 24,
-        flexDirection: 'row',
-        paddingRight: 50,
-    },       
-    itemText: {
-        fontSize: 20,
-    },  
-    iconLeft: {
-        flex: 1,
-    }, 
     
     modalToggle: {
-        padding: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 10,
-        padding: 10,
         borderRadius: 10,
-        alignSelf: 'center',
+        alignSelf: 'flex-start',
   },
         
       

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity  } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Card from '../components/card';
 import { ApprovalsContext, UserContext } from '../App';
 import { users } from '../data/users';
@@ -41,17 +41,18 @@ const Admin = ({ navigation }) => {
     
     return (
         <View style={styles.container}>
-            <Text style={styles.listLabel}>Utförda uppgifter att godkänna: { approvals.length }</Text>
+            <Text style={styles.listLabel}>Uppgifter att godkänna: { approvals.length }</Text>
             <View style={styles.list}>
                 <FlatList
                     data={approvals}
                     renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => pressApproved(item.streck, item.key, item.user, item.userKey)}>
-                        <Card>
-                            <Text style={styles.itemText}>{item.user}</Text>
-                            <Text style={styles.itemText}>{item.todo} ( {item.streck} )</Text> 
+                         <Card>
+                            <Text style={styles.itemTextLeft}>{item.user}</Text>
+                            <Text style={styles.itemTextLeft}>{item.todo} ( {item.streck} )</Text>                             
+                            <TouchableOpacity onPress={() => pressApproved(item.streck, item.key, item.user, item.userKey)}>
+                                <MaterialCommunityIcons name="hand-okay" size={32} color="black" />
+                            </TouchableOpacity>
                           </Card>
-                    </TouchableOpacity>
                     )}
                 /> 
             </View> 
@@ -62,6 +63,7 @@ const Admin = ({ navigation }) => {
                     data={allUsers}
                     renderItem={({ item }) => (
                     <Card>
+                        <MaterialIcons name={item.icon} size={24} color="black" />
                         <Text style={styles.itemText}>{item.name}</Text>  
                         <Text style={styles.itemText}>{item.streck}</Text>  
                         <Text style={styles.itemText}>( {item.lastMonth}) </Text>  
@@ -83,43 +85,19 @@ const styles = StyleSheet.create({
     },
     list: {
         flexDirection: 'row',
-
     },
-    item: {
-        height: 20,
-        marginTop: 10,
-        borderColor: 'white',
-        borderWidth: 1,
-        borderStyle: 'dashed',
-        borderRadius: 10,
-        flexDirection: 'row',
-        backgroundColor: 'white',
-        justifyContent: 'space-between',
-
-    },
-    rating: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        paddingTop: 16,
-        marginTop: 16,
-        borderTopWidth: 1,
-        borderTopColor: '#eee',
-      },
-      listLabel: {
+    listLabel: {
         paddingTop: 20,
         color: 'black',
         fontSize: 24,
-    },              
-    itemText: {
-        flex: 2,
-        fontSize: 18,
-        paddingRight: 5,
-        
-    },  
-    iconLeft: {
-        flex: 1,
     }, 
-    iconRight: {
-        flex: 1,
-    }
+    itemText: {
+        fontSize: 20,
+        marginLeft: 20,
+        flex: 1
+    },
+    itemTextLeft: {
+        fontSize: 20,
+        
+    },
 });

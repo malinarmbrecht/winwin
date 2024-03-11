@@ -43,7 +43,7 @@ const Routes = () => {
                          ),
                     })}
                 />
-                <Stack.Screen name="Profile" component={Profile} options={{ headerShown: true }}/>
+                <Stack.Screen name="Profile" component={Profile} options={{ headerTitle: 'Min profil', headerShown: true }}/>
                 <Stack.Screen name="Admin" component={Admin} options={{ headerShown: true }}/>
               </>
             ) : (

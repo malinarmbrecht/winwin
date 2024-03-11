@@ -6,6 +6,7 @@ export const users = [
         lastMonth: '32',
         type: 'user',
         image: 'liv',
+        icon: 'face-3',
     },
     {
         name: 'Hannes',
@@ -14,6 +15,7 @@ export const users = [
         lastMonth: '37',
         type: 'user',
         image: 'hannes',
+        icon: 'face-6',
     },
     {
         name: 'Leon',
@@ -22,6 +24,7 @@ export const users = [
         lastMonth: '40',
         type: 'user',
         image: 'leon',
+        icon: 'face-6',
     },
     {
         name: 'Malin',
@@ -30,5 +33,6 @@ export const users = [
         lastMonth: '0',
         type: 'admin',
         image: 'malin',
+        icon: 'face-4',
     },
 ]
