@@ -1,44 +1,87 @@
-import React, { useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity  } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Card from '../components/card';
-import { ApprovalsContext, UserContext } from '../App';
-import { users } from '../data/users';
-import { getUserProfile } from '../common/backendCalls';
+import { ApprovalsContext } from '../App';
 
 const Admin = ({ navigation }) => {
-    
-    const { user } = useContext(UserContext);
     const { approvals, setApprovals } = useContext(ApprovalsContext);
-    const [allUsers, setAllUsers] = useState(users); 
-    const [userProfile, setUserProfile] = useState();
-          
-    const pressApproved = (streck, key, user, userkey) => {
-        //get profile to update
-        const profile = users.find((user) => (user.key === userkey));
-        //const userData = getUserProfile(user);
-        setUserProfile(profile);            
+    
+    const getUsers = async () => 
+    {        
+        const url = "http://192.168.2.3:3000/users";        
+        let result = await fetch(url);        
+        result = await result.json();
+        setAllUsers(result);
+    }
+    useEffect(()=> {
+        //getUsers();
+    }, []) 
 
-        //update profile values
-        const currentPoints = profile.streck;
-        const newPoints = Number(currentPoints) + Number(streck);
-        profile.streck = newPoints;
-        //remove old userprofile from user list
-        setAllUsers(currentUsers => {
-            return currentUsers.filter(user => user.key != userkey);
-            });
-        //add updated profile to user list       
-        setAllUsers((currentUsers) => {
-              return [profile, ...currentUsers];
-          });
+    const pressApproved = (streck, id, userId) => {
+        
+        updateUserPoints(userId, streck);   
 
-       //remove approval from approvallist
-       setApprovals(prevApprovals => {
-        return prevApprovals.filter(approval => approval.key != key);
-        });
+       //remove approval from db
+       deleteApproval(id);
+       //Get all approvals again
+       getApprovalData();
     
     }
+    const updateUser = async (id, streck) => {
+        const url = "http://192.168.2.3:3000/users"+"/"+id;
+        console.log("url : " + url + ", streck: "  + streck );
+        let result = await fetch(url ,{
+            method: "PATCH",
+            headers: {
+                "Content-Type":"application/json"                
+            },  
+            
+            body: JSON.stringify({  
+                streck: streck,
+            }),
+        })
+     
+        result = await result.json();
+        if(result){
+            console.log("user updated sucessfully");
+        }
+    }
+    const getApprovalData = async () => 
+    {        
+        const url = "http://192.168.2.3:3000/approvals";        
+        let result = await fetch(url);        
+        result = await result.json();
+        setApprovals(result);
+    }
+    const updateUserPoints = async (userId, streck) =>
+    {
+        //get user to update
+        const url = "http://192.168.2.3:3000/users"+"?id="+userId;  
+        console.log("get user: " + url)  ;    
+        let result = await fetch(url);        
+        result = await result.json();
+        
+        //calculate points           
+        const currentPoints = result[0].streck;
+        console.log("current points: " + currentPoints);
+        const newPoints = Number(currentPoints) + Number(streck);
+        //update User
+        updateUser(userId, newPoints);
+    }
     
+   
+    const deleteApproval = async (id) => {
+        const url = "http://192.168.2.3:3000/approvals"+"/"+id;
+        console.log("url delete: " + url );
+        let result = await fetch(url, {
+            method: "DELETE"
+        });
+        result = await result.json();
+        if(result){
+            console.log("approval deleted");
+        }
+    }
     return (
         <View style={styles.container}>
             <Text style={styles.listLabel}>Uppgifter att godkänna: { approvals.length }</Text>
@@ -47,9 +90,10 @@ const Admin = ({ navigation }) => {
                     data={approvals}
                     renderItem={({ item }) => (
                          <Card>
-                            <Text style={styles.itemTextLeft}>{item.user}</Text>
+                            <Text style={styles.itemTextLeft}>{item.userName}</Text>
+                            <Text style={styles.itemTextLeft}>{item.userId}</Text>
                             <Text style={styles.itemTextLeft}>{item.todo} ( {item.streck} )</Text>                             
-                            <TouchableOpacity onPress={() => pressApproved(item.streck, item.key, item.user, item.userKey)}>
+                            <TouchableOpacity onPress={() => pressApproved(item.streck, item.id, item.userId)}>
                                 <MaterialCommunityIcons name="hand-okay" size={32} color="black" />
                             </TouchableOpacity>
                           </Card>
@@ -59,17 +103,7 @@ const Admin = ({ navigation }) => {
             
             <Text style={styles.listLabel}>Stjärnöversikt</Text>
             <View style={styles.list}>
-                <FlatList
-                    data={allUsers}
-                    renderItem={({ item }) => (
-                    <Card>
-                        <MaterialIcons name={item.icon} size={24} color="black" />
-                        <Text style={styles.itemText}>{item.name}</Text>  
-                        <Text style={styles.itemText}>{item.streck}</Text>  
-                        <Text style={styles.itemText}>( {item.lastMonth}) </Text>  
-                    </Card>
-                    )}
-                /> 
+                
             </View> 
         </View>
     )

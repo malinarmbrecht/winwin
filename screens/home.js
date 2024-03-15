@@ -1,28 +1,28 @@
 import React, { useContext, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TouchableWithoutFeedback, Image, FlatList, Modal, Keyboard  } from 'react-native';
-import { ApprovalsContext, UserContext } from '../App';
+import { UserContext } from '../App';
 import { MaterialIcons } from '@expo/vector-icons';
 import Card from '../components/card';
 import { todos } from '../data/todos';
 import TodoForm from './todoForm';
 
 export default function Home ({ navigation }) {
-    const { user } = useContext(UserContext);
-    const {approvals, setApprovals} = useContext(ApprovalsContext);
-    const [newApproval, setNewApproval] = useState();
-    
+    const { user } = useContext(UserContext);    
     const [modalOpen, setModalOpen] = useState(false);
     const [dynamicTodos, setDynamicTodos] = useState(todos);
     
-    const pressTodoHandler = (todo, user) => {  
-        
-        console.log('Todos at press: ' + dynamicTodos + ' todo item ' + todo  + ' user item ' + user);      
-        const newkey = Math.random().toString();  
-        setNewApproval({ user: user.name, userKey: user.key, key: newkey, todo: todo.title, streck: todo.streck });
-        
-        setApprovals((approvals) => {
-             return [newApproval, ...approvals];
-           });
+    const pressTodoHandler = async (todo, user) => {  
+        const approval = { userName:user.name, userId:user.id, todo:todo.title, streck:todo.streck };
+        const url = "http://192.168.2.3:3000/approvals";
+        let result = await fetch(url, {
+            method:"POST", 
+            headers: {
+                "Content-Type":"application/json"                
+            },
+            body:JSON.stringify(approval)           
+            });
+            result = await result.json();
+            console.log(result + ' approval: '+ approval);
     }
 
     const showProfileHandler = () => {

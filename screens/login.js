@@ -1,38 +1,63 @@
-import React, { useContext, useState } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { StyleSheet, View, Text, Image, TouchableWithoutFeedback, Keyboard  } from 'react-native';
 import Input from '../components/input';
 import Button from '../components/loginButton';
-import { getUserProfile, validateUser } from '../common/backendCalls';
+import { getUserProfile } from '../common/backendCalls';
 import { LinearGradient } from 'expo-linear-gradient';
 import { UserContext, ApprovalsContext } from '../App';
-import { approvalData } from '../data/approvals';
-
 
 const Login = ({ navigation }) => {
-    const { setUser} = useContext(UserContext);   
-    const { setApprovals} = useContext(ApprovalsContext); 
-
+    const { setUser, user } = useContext(UserContext);   
+    const { setApprovals, approvals} = useContext(ApprovalsContext); 
     const [userName, setUserName] = useState('No user');
     const [message, setMessage] = useState();
 
 
+
     const onLogin = () => {
-        setMessage('');
-        if (validateUser(userName)) {
-            setUser(userName);
+        setMessage('');        
+        getUser(userName);
 
-            const userData = getUserProfile(userName);
-            console.log('Login user: ' + userData.name + ', streck: ' + userData.streck);
-            setUser(userData);
-            console.log('Approvals at login: ' + approvalData.length)
-            setApprovals(approvalData);
-
+        if (user != 'User not found') {
+            
+            console.log('Login user: ' + user.name);
+            
+            if(user.type == "admin")
+            {
+                getApprovalData();
+            }
             navigation.navigate('Home');
         } else {                
             setMessage('Okänd användare');
         }
     }
     
+    const getUser = async (username) => {
+        const url = "http://192.168.2.3:3000/users"+"?name="+username;  
+        console.log("login user: " + url)  ;    
+        let result = await fetch(url);        
+        result = await result.json();
+        console.log("user result: "+ result[0].name)
+        if(result){
+            setUser(result[0]);
+        } else{
+            setUser('User not found');    
+        }
+    
+    }
+
+    const getApprovalData = async () => 
+    {        
+        const url = "http://192.168.2.3:3000/approvals";        
+        let result = await fetch(url);        
+        result = await result.json();
+        setApprovals(result);
+        console.log("Approvals: " + approvals);
+    }
+    useEffect(()=> {
+        getApprovalData();
+    }, [])
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <LinearGradient  colors= {['#D8FBFB', '#56EEEE'] } locations={[0.1, 0.8]} height="100%" >
@@ -45,9 +70,11 @@ const Login = ({ navigation }) => {
                         <Text>{message}</Text>
                     </View>                         
                     <Button text="OK" onPress={onLogin} style={{...styles.button, ...styles.buttonPos}}/>          
+                   
                 </View>
                 </LinearGradient>
         </TouchableWithoutFeedback>
+       
     )
 }
 
@@ -57,10 +84,6 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         height: '100%', 
-    
-
-        //paddingVertical: 24,
-        //backgroundColor: '#56EEEE',
     },
     loginContainer: {
         marginHorizontal: 10,
@@ -77,8 +100,6 @@ const styles = StyleSheet.create({
     background: {
 
         height: '100%', 
-        //colors: ['#4c669f', '#3b5998', '#192f6a'],
-        //colors: ['rgba(0,0,0,0.8)', 'transparent'],
     },
     image: {
         height: 400,

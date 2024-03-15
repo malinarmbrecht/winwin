@@ -1,0 +1,64 @@
+{
+  "approvals": [
+    {
+      "id": "9f66",
+      "userName": "Liv",
+      "userId": "1",
+      "todo": "sopor",
+      "streck": "1"
+    },
+    {
+      "id": "9f67",
+      "userName": "Leon",
+      "userId": "3",
+      "todo": "diskmaskin",
+      "streck": "2"
+    },
+    {
+      "id": "9f69",
+      "userName": "Hannes",
+      "userId": "2",
+      "todo": "mat",
+      "streck": "3"
+    }
+  ],
+  "todos": [],
+  "users": [
+    {
+      "name": "Liv",
+      "id": "1",
+      "streck": 9,
+      "lastMonth": "37",
+      "type": "user",
+      "image": "liv",
+      "icon": "face-2"
+    },
+    {
+      "name": "Hannes",
+      "id": "2",
+      "streck": "5",
+      "lastMonth": "37",
+      "type": "user",
+      "image": "hannes",
+      "icon": "face-6"
+    },
+    {
+      "name": "Leon",
+      "id": "3",
+      "streck": "5",
+      "lastMonth": "37",
+      "type": "user",
+      "image": "leon",
+      "icon": "face-6"
+    },
+    {
+      "name": "Malin",
+      "id": "4",
+      "streck": "0",
+      "lastMonth": "0",
+      "type": "admin",
+      "image": "malin",
+      "icon": "face-4"
+    }
+  ]
+}
